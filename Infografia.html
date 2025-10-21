@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infografía Interactiva - Ciclo de Vida de la Seguridad de TI</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#0ea5a4;--muted:#94a3b8;--glass: rgba(255,255,255,0.04);--glass-2: rgba(255,255,255,0.02)}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#e6eef6;background:linear-gradient(180deg,#071024 0%, #06121a 100%);}
+    .wrap{max-width:1100px;margin:28px auto;padding:24px;}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    header svg{width:56px;height:56px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted)}
+
+    .board{display:grid;grid-template-columns:1fr 360px;gap:18px}
+
+    /* timeline */
+    .timeline{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(2,6,23,0.6);}
+    .stages{display:flex;flex-direction:column;gap:12px}
+    .stage{display:flex;align-items:center;gap:14px;background:var(--glass);padding:12px;border-radius:10px;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease;}
+    .stage:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .stage .bubble{min-width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--card),#071728);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -6px 20px rgba(0,0,0,0.35)}
+    .stage h3{margin:0;font-size:16px}
+    .stage p{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+    /* details panel */
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:18px;position:relative;min-height:360px}
+    .panel h2{margin:0 0 8px}
+    .panel .example{background:var(--glass-2);padding:10px;border-radius:8px;margin-top:10px;color:var(--muted);font-size:14px}
+    .panel .actions{display:flex;gap:8px;margin-top:12px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--accent);cursor:pointer}
+
+    /* radial map */
+    .radial{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card{background:var(--card);padding:12px;border-radius:10px;min-height:86px}
+    .card h4{margin:0 0 6px;font-size:14px}
+    .card p{margin:0;color:var(--muted);font-size:13px}
+
+    /* analysis box */
+    .analysis{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(14,165,164,0.04), transparent)}
+    .analysis ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+
+    footer{color:var(--muted);font-size:13px;margin-top:10px}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{background:linear-gradient(180deg,#071428,#05101a);padding:18px;border-radius:12px;max-width:780px;width:100%;box-shadow:0 20px 60px rgba(2,6,23,0.7);}
+    .modal h3{margin-top:0}
+    .close{position:absolute;right:12px;top:12px;background:transparent;border:0;color:var(--muted);font-size:18px}
+
+    /* responsive */
+    @media (max-width:980px){.board{grid-template-columns:1fr;}.radial{grid-template-columns:1fr 1fr}.panel{min-height:240px}}
+    @media (max-width:560px){.radial{grid-template-columns:1fr}.stage{padding:10px}.stage .bubble{min-width:54px;height:54px}}
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .kbd{display:inline-block;background:rgba(255,255,255,0.03);padding:4px 8px;border-radius:6px;font-size:12px;border:1px solid rgba(255,255,255,0.02)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="2" y="3" width="20" height="14" rx="2" stroke="url(#g)" stroke-width="1.2"></rect>
+        <path d="M7 20h10" stroke="currentColor" stroke-opacity=".6" stroke-width="1.2" stroke-linecap="round"></path>
+        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#60a5fa"/></linearGradient></defs>
+      </svg>
+      <div>
+        <h1>Infografía Interactiva — Ciclo de Vida de la Seguridad de TI</h1>
+        <p class="lead">Interacciona con cada etapa para ver explicaciones y ejemplos prácticos. Ideal para presentaciones, formación o documentación.</p>
+      </div>
+    </header>
+
+    <div class="board">
+      <section class="timeline" aria-label="Etapas del ciclo de vida">
+        <div class="stages">
+          <div class="stage" data-stage="identificacion" tabindex="0">
+            <div class="bubble" aria-hidden>
+              <!-- lupa -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" stroke="#9be7e3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 21l-4.35-4.35" stroke="#9be7e3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </div>
+            <div>
+              <h3>1. Identificación</h3>
+              <p>Inventario de activos, clasificación y evaluación de riesgos.</p>
+            </div>
+          </div>
+
+          <div class="stage" data-stage="proteccion" tabindex="0">
+            <div class="bubble">
+              <!-- escudo -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v4c0 5-3.5 9.5-7 11-3.5-1.5-7-6-7-11V5l7-3z" stroke="#7de3c9" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>2. Protección</h3>
+              <p>Controles técnicos y organizativos para mitigar riesgos.</p>
+            </div>
+          </div>
+
+          <div class="stage" data-stage="deteccion" tabindex="0">
+            <div class="bubble">
+              <!-- alarma -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 2v2" stroke="#ffd58a" stroke-width="1.6" stroke-linecap="round"/><path d="M5 8a7 7 0 0 0 14 0v-1" stroke="#ffd58a" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h3>3. Detección</h3>
+              <p>Monitorización y alertas para eventos anómalos.</p>
+            </div>
+          </div>
+
+          <div class="stage" data-stage="respuesta" tabindex="0">
+            <div class="bubble">
+              <!-- responder -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-9-9" stroke="#f6a6b2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>4. Respuesta</h3>
+              <p>Contención, análisis forense y erradicación del incidente.</p>
+            </div>
+          </div>
+
+          <div class="stage" data-stage="recuperacion" tabindex="0">
+            <div class="bubble">
+              <!-- nube -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M20 17.5A4.5 4.5 0 0 0 15.5 13H8a4 4 0 1 0-1 7.8" stroke="#9ad0ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>5. Recuperación</h3>
+              <p>Restauración de servicios y verificación de integridad.</p>
+            </div>
+          </div>
+
+          <div class="stage" data-stage="evaluacion" tabindex="0">
+            <div class="bubble">
+              <!-- engranaje -->
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="#c7f9e8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a1 1 0 0 1-1.1 1.6l-.2-.1a1.7 1.7 0 0 0-1.8.3l-.1.1a1 1 0 0 1-1.6-1.1l.1-.2a1.7 1.7 0 0 0-.3-1.8" stroke="#c7f9e8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>6. Evaluación & Mejora</h3>
+              <p>Revisión de incidentes, métricas y planificación de mejoras.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="btn-tour">Iniciar recorrida</button>
+          <button class="btn" id="btn-reset">Restablecer panel</button>
+          <div style="flex:1"></div>
+          <span class="muted">Consejo: usa <span class="kbd">Tab</span> para navegar y <span class="kbd">Enter</span> para abrir detalles.</span>
+        </div>
+      </section>
+
+      <aside class="panel" id="panel" aria-live="polite">
+        <h2>Selecciona una etapa</h2>
+        <p class="muted">Haz clic en cualquier etapa a la izquierda para ver una descripción ampliada, ejemplos y acciones prácticas.</p>
+
+        <div id="content-placeholder" style="margin-top:12px">
+          <div class="card" style="background:transparent;border:0;padding:0">
+            <h4>Vista rápida</h4>
+            <p class="muted">La seguridad es un ciclo: identificar -> proteger -> detectar -> responder -> recuperar -> evaluar.</p>
+          </div>
+        </div>
+
+        <div class="radial" id="radial">
+          <div class="card">
+            <h4>Impacto</h4>
+            <p class="muted" id="impacto">—</p>
+          </div>
+          <div class="card">
+            <h4>Controles típicos</h4>
+            <p class="muted" id="controles">—</p>
+          </div>
+          <div class="card">
+            <h4>Responsable</h4>
+            <p class="muted" id="responsable">—</p>
+          </div>
+        </div>
+
+        <div class="analysis">
+          <strong>Análisis — puntos clave</strong>
+          <ul>
+            <li><strong>Proceso continuo:</strong> la seguridad debe integrarse en los procesos de negocio.</li>
+            <li><strong>Factor humano:</strong> la formación y la cultura son determinantes.</li>
+            <li><strong>Resiliencia:</strong> capacidad de recuperar operaciones críticas rápidamente.</li>
+          </ul>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="open-examples">Ver ejemplos prácticos</button>
+          <button class="btn" id="download-html">Descargar HTML</button>
+        </div>
+
+        <footer>
+          Diseñado para formación y presentaciones • Puedes editar el contenido o exportarlo a PDF (Imprimir página).
+        </footer>
+      </aside>
+    </div>
+
+    <!-- modal -->
+    <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+      <div class="modal" id="modal-card">
+        <button class="close" id="close-modal">✕</button>
+        <h3 id="modal-title">Título</h3>
+        <p id="modal-desc" class="muted">Descripción</p>
+        <div id="modal-example" class="example"></div>
+        <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" id="modal-action">Copiar checklist</button><button class="btn" id="modal-close-2">Cerrar</button></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Data for stages (text in Spanish)
+    const stages = {
+      identificacion: {
+        title: 'Identificación',
+        desc: 'Inventario de activos, clasificación, evaluación de riesgos y mapeo de flujos de información. Base para priorizar controles.',
+        example: '<strong>Ejemplo práctico:</strong> Una pyme descubre mediante auditoría interna que los equipos contables comparten archivos con contraseñas en la misma carpeta. Acción: inventario, clasificación de datos y segmentación de acceso.',
+        impacto: 'Alta — define qué proteger; errores implican controles mal dirigidos.',
+        controles: 'Inventario, clasificación, análisis de riesgo, políticas de acceso',
+        responsable: 'CISO / Responsable TI'
+      },
+      proteccion: {
+        title: 'Protección',
+        desc: 'Implementación de controles técnicos (firewall, MDM, cifrado) y organizativos (políticas, formación) para reducir la probabilidad y el impacto de incidentes.',
+        example: '<strong>Ejemplo práctico:</strong> Implementación de MFA para el acceso remoto y cifrado de bases de datos con información sensible. Complementar con un programa de concientización.',
+        impacto: 'Media-Alta — reduce la superficie de ataque.',
+        controles: 'Firewalls, MFA, cifrado, políticas, backups',
+        responsable: 'Equipo de Seguridad / SOC'
+      },
+      deteccion: {
+        title: 'Detección',
+        desc: 'Monitorización continua, correlación de eventos y alertas (SIEM, EDR) para identificar actividades inusuales o indicios de compromiso.',
+        example: '<strong>Ejemplo práctico:</strong> SIEM alerta sobre múltiples inicios de sesión fallidos y conexión desde una IP extranjera; se eleva a investigación.',
+        impacto: 'Alta — permite actuar antes de la escalada.',
+        controles: 'SIEM, EDR, monitoreo, detección de anomalías',
+        responsable: 'SOC / Equipo OPS'
+      },
+      respuesta: {
+        title: 'Respuesta',
+        desc: 'Contención, análisis forense, comunicación de incidente y plan de remediación. Incluir playbooks para distintos tipos de incidentes.',
+        example: '<strong>Ejemplo práctico:</strong> Ante un ransomware, se aísla el endpoint, se realiza análisis forense y se restaura desde backups verificados.',
+        impacto: 'Crítico — determina la magnitud de la pérdida y la continuidad.',
+        controles: 'Playbooks, equipos de respuesta, plan de comunicación',
+        responsable: 'Equipo de Respuesta a Incidentes'
+      },
+      recuperacion: {
+        title: 'Recuperación',
+        desc: 'Restauración de servicios, verificación de integridad y continuidad operativa. Pruebas de recuperación periódicas.',
+        example: '<strong>Ejemplo práctico:</strong> Restaurar servidores críticos desde snapshots verificados y ejecutar pruebas de validación post-recuperación.',
+        impacto: 'Alto — restaura operaciones y confianza.',
+        controles: 'Backups, DRP, pruebas de recuperación',
+        responsable: 'Equipo TI / Operaciones'
+      },
+      evaluacion: {
+        title: 'Evaluación & Mejora',
+        desc: 'Lecciones aprendidas, métricas (MTTR, MTTD), auditorías y ajustes continuos en políticas y controles.',
+        example: '<strong>Ejemplo práctico:</strong> Post-mortem tras incidente del mes X: se ajustan políticas, se parchean vulnerabilidades y se programa formación adicional.',
+        impacto: 'Sostenible — impulsa la mejora continua.',
+        controles: 'KPIs, auditorías, actualización de playbooks',
+        responsable: 'CISO / Gobernanza'
+      }
+    };
+
+    // helpers
+    const panel = document.getElementById('panel');
+    const placeholder = document.getElementById('content-placeholder');
+    const impactoEl = document.getElementById('impacto');
+    const controlesEl = document.getElementById('controles');
+    const responsableEl = document.getElementById('responsable');
+
+    function showStage(key){
+      const s = stages[key];
+      if(!s) return;
+      document.getElementById('panel').querySelector('h2').textContent = s.title;
+      placeholder.innerHTML = `<p style=\"margin:8px 0;color:var(--muted)\">${s.desc}</p><div class=\"example\">${s.example}</div>`;
+      impactoEl.textContent = s.impacto;
+      controlesEl.textContent = s.controles;
+      responsableEl.textContent = s.responsable;
+    }
+
+    // attach listeners to stage elements
+    document.querySelectorAll('.stage').forEach(el=>{
+      const key = el.getAttribute('data-stage');
+      el.addEventListener('click', ()=> showStage(key));
+      el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') showStage(key); });
+    });
+
+    // modal logic
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalExample = document.getElementById('modal-example');
+    const closeModal = document.getElementById('close-modal');
+    const modalClose2 = document.getElementById('modal-close-2');
+    const modalAction = document.getElementById('modal-action');
+
+    function openModalFor(key){
+      const s = stages[key];
+      modalTitle.textContent = s.title + ' — Checklist de respuesta';
+      modalDesc.textContent = s.desc;
+      modalExample.innerHTML = s.example + '<hr/><strong>Checklist rápida:</strong><ul><li>Notificar al equipo</li><li>Preservar evidencias</li><li>Aplicar contención</li><li>Iniciar recuperación</li></ul>';
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    closeModal.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
+    modalClose2.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) { modal.style.display='none'; document.body.style.overflow=''; } });
+
+    // open examples button
+    document.getElementById('open-examples').addEventListener('click', ()=>{
+      // open modal with combined examples
+      modalTitle.textContent = 'Ejemplos prácticos — Casos de uso';
+      modalDesc.textContent = 'Tres escenarios que ayudan a entender la aplicación del ciclo.';
+      modalExample.innerHTML = `
+        <ol>
+          <li><strong>Pyme financiera:</strong> Identificación descubrió accesos compartidos -> Protección con MFA y segmentación -> Detección: SIEM detecta accesos extraños -> Respuesta: aislamiento de cuentas -> Recuperación desde backups -> Evaluación y nueva política de contraseñas.</li>
+          <li><strong>Hospital (ficticio):</strong> Evaluación de riesgos identificó equipos legacy -> Protección: red separada para dispositivos médicos -> Detección: EDR detecta malware en estación de trabajo -> Respuesta y recuperación coordinada con soporte clinico.</li>
+          <li><strong>Startup SaaS:</strong> Tras fuga de datos (error humano), se implementa DLP, formación obligatoria y proceso de revisión de permisos.</li>
+        </ol>
+      `;
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    // tour
+    let tourOrder = ['identificacion','proteccion','deteccion','respuesta','recuperacion','evaluacion'];
+    document.getElementById('btn-tour').addEventListener('click', async ()=>{
+      for (const k of tourOrder){
+        showStage(k);
+        // highlight corresponding element
+        const el = document.querySelector(`.stage[data-stage=\"${k}\"]`);
+        el.style.boxShadow = '0 18px 50px rgba(0,0,0,0.65)';
+        await new Promise(r=>setTimeout(r,700));
+        el.style.boxShadow = '';
+      }
+    });
+
+    // reset
+    document.getElementById('btn-reset').addEventListener('click', ()=>{
+      document.getElementById('panel').querySelector('h2').textContent = 'Selecciona una etapa';
+      placeholder.innerHTML = `<div class=\"card\" style=\"background:transparent;border:0;padding:0\"><h4>Vista rápida</h4><p class=\"muted\">La seguridad es un ciclo: identificar -> proteger -> detectar -> responder -> recuperar -> evaluar.</p></div>`;
+      impactoEl.textContent = '—'; controlesEl.textContent='—'; responsableEl.textContent='—';
+    });
+
+    // download html: create a blob of the current page
+    document.getElementById('download-html').addEventListener('click', ()=>{
+      const html = `<!doctype html>\n` + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'Infografia_Ciclo_Seguridad_TI.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // modal action: copy checklist to clipboard
+    modalAction.addEventListener('click', ()=>{
+      const text = modalExample.innerText;
+      navigator.clipboard.writeText(text).then(()=>{
+        modalAction.textContent = 'Copiado ✓';
+        setTimeout(()=> modalAction.textContent = 'Copiar checklist', 1800);
+      }).catch(()=>{ modalAction.textContent = 'Error'; setTimeout(()=> modalAction.textContent = 'Copiar checklist', 1800); });
+    });
+
+    // initial stage
+    // showStage('identificacion');
+
+    // keyboard accessibility: Enter on panel buttons
+    document.querySelectorAll('.btn').forEach(b=> b.addEventListener('keydown', (e)=>{ if(e.key==='Enter') b.click(); }));
+  </script>
+</body>
+</html>
